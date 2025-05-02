@@ -4,14 +4,76 @@
     "/home/georgeey/RiderProjects/policy/tests/tests.csproj": {}
   },
   "projects": {
-    "/home/georgeey/RiderProjects/policy/tests/tests.csproj": {
+    "/home/georgeey/RiderProjects/policy/application/application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/georgeey/RiderProjects/policy/tests/tests.csproj",
-        "projectName": "tests",
-        "projectPath": "/home/georgeey/RiderProjects/policy/tests/tests.csproj",
+        "projectUniqueName": "/home/georgeey/RiderProjects/policy/application/application.csproj",
+        "projectName": "application",
+        "projectPath": "/home/georgeey/RiderProjects/policy/application/application.csproj",
         "packagesPath": "/home/georgeey/.nuget/packages/",
-        "outputPath": "/home/georgeey/RiderProjects/policy/tests/obj/",
+        "outputPath": "/home/georgeey/RiderProjects/policy/application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/georgeey/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/georgeey/RiderProjects/policy/domain/domain.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/domain/domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/georgeey/RiderProjects/policy/domain/domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/georgeey/RiderProjects/policy/domain/domain.csproj",
+        "projectName": "domain",
+        "projectPath": "/home/georgeey/RiderProjects/policy/domain/domain.csproj",
+        "packagesPath": "/home/georgeey/.nuget/packages/",
+        "outputPath": "/home/georgeey/RiderProjects/policy/domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/georgeey/.nuget/NuGet/NuGet.Config"
@@ -54,6 +116,229 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj",
+        "projectName": "infrastructure",
+        "projectPath": "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj",
+        "packagesPath": "/home/georgeey/.nuget/packages/",
+        "outputPath": "/home/georgeey/RiderProjects/policy/infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/georgeey/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/georgeey/RiderProjects/policy/application/application.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/application/application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/georgeey/RiderProjects/policy/tests/tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/georgeey/RiderProjects/policy/tests/tests.csproj",
+        "projectName": "tests",
+        "projectPath": "/home/georgeey/RiderProjects/policy/tests/tests.csproj",
+        "packagesPath": "/home/georgeey/.nuget/packages/",
+        "outputPath": "/home/georgeey/RiderProjects/policy/tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/georgeey/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/georgeey/RiderProjects/policy/domain/domain.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/domain/domain.csproj"
+              },
+              "/home/georgeey/RiderProjects/policy/web/web.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/web/web.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.13.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/georgeey/RiderProjects/policy/web/web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/georgeey/RiderProjects/policy/web/web.csproj",
+        "projectName": "web",
+        "projectPath": "/home/georgeey/RiderProjects/policy/web/web.csproj",
+        "packagesPath": "/home/georgeey/.nuget/packages/",
+        "outputPath": "/home/georgeey/RiderProjects/policy/web/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/georgeey/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/georgeey/RiderProjects/policy/application/application.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/application/application.csproj"
+              },
+              "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj": {
+                "projectPath": "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
