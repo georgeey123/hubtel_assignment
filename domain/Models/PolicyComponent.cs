@@ -1,6 +1,6 @@
 using domain.Enums;
 
-namespace domain.Models;
+namespace domain.Models.Policy;
 public class PolicyComponent
 {
     public int Sequence { get; set; }

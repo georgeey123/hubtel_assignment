@@ -1,4 +1,4 @@
-namespace domain.Models;
+namespace domain.Models.Policy;
 
 public class Policy: BaseEntity
 {
