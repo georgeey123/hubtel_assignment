@@ -16,15 +16,20 @@ public class QuoteController : ControllerBase
     }
 
     [HttpPost("request-quote")]
-    public async Task<IActionResult> RequestQuote([FromBody] PremiumRequestDTO request)
+    public async Task<ActionResult<PremiumResponseDTO>> RequestQuote([FromBody] PremiumRequestDTO request)
     {
-        if (request.MarketValue <= 0)
-            return BadRequest("Market value must be greater than zero.");
-
-        var result = await _calculatorService.CalculatePremiumAsync(request);
-        if (result == null)
-            return NotFound("Policy not found.");
-
-        return Ok(result);
+        try
+        {
+            var result = await _calculatorService.CalculatePremiumAsync(request);
+            return Ok(result);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "An error occurred while calculating the premium");
+        }
     }
 }
