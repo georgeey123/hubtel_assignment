@@ -1,3 +1,4 @@
+using application.DTOs;
 using application.Interfaces;
 using domain.Models.Policy;
 using Microsoft.AspNetCore.Mvc;
@@ -38,15 +39,23 @@ public class PolicyController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult<Policy>> UpdatePolicy(int id, [FromBody] Policy policy)
+    public async Task<ActionResult<Policy>> UpdatePolicy(int id, [FromBody] UpdatePolicyDTO updateDTO)
     {
-        if (id != policy.Id) return 
-            BadRequest("Id does not match");
-        
-        var updatedPolicy = await _policyRepository.UpdateAsync(policy);
-        if (updatedPolicy == null) 
+        var existingPolicy = await _policyRepository.GetByIdAsync(id);
+        if (existingPolicy == null) 
             return NotFound();
         
+        existingPolicy.PolicyName = updateDTO.PolicyName;
+        existingPolicy.Components = updateDTO.Components.Select(c => new PolicyComponent
+        {
+            Sequence = c.Sequence,
+            Name = c.Name,
+            Operation = c.Operation,
+            FlatValue = c.FlatValue,
+            PercentageValue = c.PercentageValue
+        }).ToList();
+        
+        var updatedPolicy = await _policyRepository.UpdateAsync(existingPolicy);
         return Ok(updatedPolicy);
     }
 
