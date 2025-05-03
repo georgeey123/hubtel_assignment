@@ -64,14 +64,14 @@ public class PremiumCalculatorService : IPremiumCalculatorService
             }
 
             // Record calculation step
-            response.CalculationDetails.Add(new CalculationDetail
-            {
-                Sequence = component.Sequence,
-                ComponentName = component.Name,
-                Operation = component.Operation.ToString(),
-                Amount = componentAmount,
-                RunningTotal = runningTotal
-            });
+            // response.CalculationDetails.Add(new CalculationDetail
+            // {
+            //     Sequence = component.Sequence,
+            //     ComponentName = component.Name,
+            //     Operation = component.Operation.ToString(),
+            //     Amount = componentAmount,
+            //     RunningTotal = runningTotal
+            // });
         }
 
         response.Premium = runningTotal;

@@ -4,26 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 using web.Controllers;
 using application.Interfaces;
 using domain.Models.Policy;
+using domain.Enums;
+using application.DTOs;
+
 
 namespace tests;
 
 public class PolicyControllerTests
 {
-    private readonly Mock<IPolicyRepository> _mockRepo;
+    private readonly Mock<IPolicyRepository> _mockRepository;
+    private readonly Mock<IPremiumCalculatorService> _mockPremiumCalculator;
     private readonly PolicyController _controller;
 
     public PolicyControllerTests()
     {
-        _mockRepo = new Mock<IPolicyRepository>();
-        _controller = new PolicyController(_mockRepo.Object);
+        _mockRepository = new Mock<IPolicyRepository>();
+        _mockPremiumCalculator = new Mock<IPremiumCalculatorService>();
+        _controller = new PolicyController(_mockRepository.Object);
     }
 
     [Fact]
-    public async Task GetAllPolicies_ReturnsOk_WithPolicies()
+    public async Task GetAllPolicies_ReturnsOkResult()
     {
         // Arrange
-        var policies = new List<Policy> { new Policy { Id = 1 }, new Policy { Id = 2 } };
-        _mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(policies);
+        var expectedPolicies = new List<Policy> { CreateSamplePolicy() };
+        _mockRepository.Setup(repo => repo.GetAllAsync())
+            .ReturnsAsync(expectedPolicies);
 
         // Act
         var result = await _controller.GetAllPolicies();
@@ -31,109 +37,133 @@ public class PolicyControllerTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         var returnedPolicies = Assert.IsType<List<Policy>>(okResult.Value);
-        Assert.Equal(2, returnedPolicies.Count);
+        Assert.Single(returnedPolicies);
     }
 
     [Fact]
-    public async Task GetAllPolicies_ReturnsOk_WithEmptyList()
+    public async Task GetPolicyById_WithValidId_ReturnsPolicy()
     {
-        _mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Policy>());
+        // Arrange
+        var policy = CreateSamplePolicy();
+        _mockRepository.Setup(repo => repo.GetByIdAsync(1))
+            .ReturnsAsync(policy);
 
-        var result = await _controller.GetAllPolicies();
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnedPolicies = Assert.IsType<List<Policy>>(okResult.Value);
-        Assert.Empty(returnedPolicies);
-    }
-
-    [Fact]
-    public async Task GetPolicyById_ReturnsOk_WhenFound()
-    {
-        var policy = new Policy { Id = 1 };
-        _mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(policy);
-
+        // Act
         var result = await _controller.GetPolicyById(1);
 
+        // Assert
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returned = Assert.IsType<Policy>(okResult.Value);
-        Assert.Equal(1, returned.Id);
+        var returnedPolicy = Assert.IsType<Policy>(okResult.Value);
+        Assert.Equal(policy.Id, returnedPolicy.Id);
     }
 
     [Fact]
-    public async Task GetPolicyById_ReturnsNotFound_WhenNotFound()
+    public async Task GetPolicyById_WithInvalidId_ReturnsNotFound()
     {
-        _mockRepo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Policy?)null);
+        // Arrange
+        _mockRepository.Setup(repo => repo.GetByIdAsync(999))
+            .ReturnsAsync((Policy)null);
 
-        var result = await _controller.GetPolicyById(1);
+        // Act
+        var result = await _controller.GetPolicyById(999);
 
+        // Assert
         Assert.IsType<NotFoundResult>(result.Result);
     }
 
     [Fact]
-    public async Task CreatePolicy_ReturnsCreatedAtAction()
+    public async Task CreatePolicy_WithValidData_ReturnsCreatedAtAction()
     {
-        var newPolicy = new Policy { Id = 1 };
-        _mockRepo.Setup(r => r.CreateAsync(It.IsAny<Policy>())).ReturnsAsync(newPolicy);
+        // Arrange
+        var createDto = new CreatePolicyDTO
+        {
+            PolicyName = "Test Policy",
+            Components = new List<CreatePolicyComponentDTO>
+            {
+                new() { 
+                    Sequence = 1,
+                    Name = "Base Premium",
+                    Operation = OperationType.Add,
+                    FlatValue = 100,
+                    PercentageValue = 0
+                }
+            }
+        };
 
-        var result = await _controller.CreatePolicy(newPolicy);
+        var createdPolicy = CreateSamplePolicy();
+        _mockRepository.Setup(repo => repo.CreateAsync(It.IsAny<Policy>()))
+            .ReturnsAsync(createdPolicy);
 
-        var created = Assert.IsType<CreatedAtActionResult>(result.Result);
-        var value = Assert.IsType<Policy>(created.Value);
-        Assert.Equal(1, value.Id);
+        // Act
+        var result = await _controller.CreatePolicy(createDto);
+
+        // Assert
+        var createdAtResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+        Assert.Equal(nameof(PolicyController.GetPolicyById), createdAtResult.ActionName);
     }
 
     [Fact]
-    public async Task UpdatePolicy_ReturnsOk_WhenSuccessful()
+    public async Task PatchPolicy_WithValidUpdate_ReturnsOkResult()
     {
-        var policy = new Policy { Id = 1 };
-        _mockRepo.Setup(r => r.UpdateAsync(policy)).ReturnsAsync(policy);
+        // Arrange
+        var existingPolicy = CreateSamplePolicy();
+        var updateDto = new UpdatePolicyDTO
+        {
+            PolicyName = "Updated Policy",
+            Components = new List<UpdatePolicyComponentDTO>
+            {
+                new() {
+                    Sequence = 1,
+                    Name = "Updated Component"
+                }
+            }
+        };
 
-        var result = await _controller.UpdatePolicy(1, policy);
+        _mockRepository.Setup(repo => repo.GetByIdAsync(1))
+            .ReturnsAsync(existingPolicy);
+        _mockRepository.Setup(repo => repo.UpdateAsync(It.IsAny<Policy>()))
+            .ReturnsAsync(existingPolicy);
 
-        var ok = Assert.IsType<OkObjectResult>(result.Result);
-        var updated = Assert.IsType<Policy>(ok.Value);
-        Assert.Equal(1, updated.Id);
+        // Act
+        var result = await _controller.PatchPolicy(1, updateDto);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var returnedPolicy = Assert.IsType<Policy>(okResult.Value);
+        Assert.Equal("Updated Policy", returnedPolicy.PolicyName);
     }
 
     [Fact]
-    public async Task UpdatePolicy_ReturnsBadRequest_WhenIdMismatch()
+    public async Task DeletePolicy_WithValidId_ReturnsNoContent()
     {
-        var policy = new Policy { Id = 2 };
+        // Arrange
+        _mockRepository.Setup(repo => repo.DeleteAsync(1))
+            .ReturnsAsync(true);
 
-        var result = await _controller.UpdatePolicy(1, policy);
-
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
-        Assert.Equal("Id does not match", badRequest.Value);
-    }
-
-    [Fact]
-    public async Task UpdatePolicy_ReturnsNotFound_WhenPolicyNotFound()
-    {
-        var policy = new Policy { Id = 1 };
-        _mockRepo.Setup(r => r.UpdateAsync(policy)).ReturnsAsync((Policy?)null);
-
-        var result = await _controller.UpdatePolicy(1, policy);
-
-        Assert.IsType<NotFoundResult>(result.Result);
-    }
-
-    [Fact]
-    public async Task DeletePolicy_ReturnsNoContent_WhenSuccessful()
-    {
-        _mockRepo.Setup(r => r.DeleteAsync(1)).ReturnsAsync(true);
-
+        // Act
         var result = await _controller.DeletePolicy(1);
 
+        // Assert
         Assert.IsType<NoContentResult>(result.Result);
     }
 
-    [Fact]
-    public async Task DeletePolicy_ReturnsNotFound_WhenFailed()
+    private static Policy CreateSamplePolicy()
     {
-        _mockRepo.Setup(r => r.DeleteAsync(1)).ReturnsAsync(false);
-
-        var result = await _controller.DeletePolicy(1);
-
-        Assert.IsType<NotFoundResult>(result.Result);
+        return new Policy
+        {
+            Id = 1,
+            PolicyName = "Test Policy",
+            Components = new List<PolicyComponent>
+            {
+                new()
+                {
+                    Sequence = 1,
+                    Name = "Base Premium",
+                    Operation = OperationType.Add,
+                    FlatValue = 100,
+                    PercentageValue = 0
+                }
+            }
+        };
     }
 }

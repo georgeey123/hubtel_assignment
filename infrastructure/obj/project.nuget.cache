@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "M8057xn51jU=",
+  "dgSpecHash": "Hb49Uw3fLKU=",
   "success": true,
   "projectFilePath": "/home/georgeey/RiderProjects/policy/infrastructure/infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/home/georgeey/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.0-preview.3.25171.5/microsoft.extensions.dependencyinjection.10.0.0-preview.3.25171.5.nupkg.sha512",
+    "/home/georgeey/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.0-preview.3.25171.5/microsoft.extensions.dependencyinjection.abstractions.10.0.0-preview.3.25171.5.nupkg.sha512"
+  ],
   "logs": []
 }

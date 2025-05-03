@@ -61,13 +61,13 @@ public class PolicyController : ControllerBase
         if (existingPolicy == null)
             return NotFound();
         
-        // Update Policy Name if provided
+        // Update Policy Name
         if (updateDTO.PolicyName != null)
         {
             existingPolicy.PolicyName = updateDTO.PolicyName;
         }
 
-        // Update Components if provided
+        // Update Components
         if (updateDTO.Components != null)
         {
             foreach (var componentPatch in updateDTO.Components)
@@ -77,7 +77,7 @@ public class PolicyController : ControllerBase
 
                 if (existingComponent != null)
                 {
-                    // Update only provided values
+                    // Conditional Updates
                     if (componentPatch.Name != null)
                         existingComponent.Name = componentPatch.Name;
                 
@@ -97,8 +97,7 @@ public class PolicyController : ControllerBase
         var updatedPolicy = await _policyRepository.UpdateAsync(existingPolicy);
         return Ok(updatedPolicy);
     }
-
-
+    
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<bool>> DeletePolicy(int id)
