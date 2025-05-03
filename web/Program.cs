@@ -1,4 +1,5 @@
 using application.Interfaces;
+using application.Services;
 using infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddSingleton<IPolicyRepository, InMemoryRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IPremiumCalculatorService, PremiumCalculatorService>();
 
 var app = builder.Build();
 
