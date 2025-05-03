@@ -2,6 +2,7 @@ using application.DTOs;
 using application.Interfaces;
 using domain.Models.Policy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace web.Controllers;
 
@@ -31,33 +32,73 @@ public class PolicyController : ControllerBase
         return Ok(policy);
     }
     
-    [HttpPost]
-    public async Task<ActionResult<Policy>> CreatePolicy([FromBody] Policy policy)
-    {
-        var createdPolicy = await _policyRepository.CreateAsync(policy);
-        return CreatedAtAction(nameof(GetPolicyById), new {id = createdPolicy.Id}, createdPolicy);
-    }
     
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Policy>> UpdatePolicy(int id, [FromBody] UpdatePolicyDTO updateDTO)
+    [HttpPost]
+    public async Task<ActionResult<Policy>> CreatePolicy([FromBody] CreatePolicyDTO createDTO)
+    {
+        var policy = new Policy
+        {
+            PolicyName = createDTO.PolicyName,
+            Components = createDTO.Components.Select(c => new PolicyComponent
+            {
+                Sequence = c.Sequence,
+                Name = c.Name,
+                Operation = c.Operation,
+                FlatValue = c.FlatValue,
+                PercentageValue = c.PercentageValue
+            }).ToList()
+        };
+
+        var createdPolicy = await _policyRepository.CreateAsync(policy);
+        return CreatedAtAction(nameof(GetPolicyById), new { id = createdPolicy.Id }, createdPolicy);
+    }
+
+    
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<Policy>> PatchPolicy(int id, [FromBody] UpdatePolicyDTO updateDTO)
     {
         var existingPolicy = await _policyRepository.GetByIdAsync(id);
-        if (existingPolicy == null) 
+        if (existingPolicy == null)
             return NotFound();
         
-        existingPolicy.PolicyName = updateDTO.PolicyName;
-        existingPolicy.Components = updateDTO.Components.Select(c => new PolicyComponent
+        // Update Policy Name if provided
+        if (updateDTO.PolicyName != null)
         {
-            Sequence = c.Sequence,
-            Name = c.Name,
-            Operation = c.Operation,
-            FlatValue = c.FlatValue,
-            PercentageValue = c.PercentageValue
-        }).ToList();
-        
+            existingPolicy.PolicyName = updateDTO.PolicyName;
+        }
+
+        // Update Components if provided
+        if (updateDTO.Components != null)
+        {
+            foreach (var componentPatch in updateDTO.Components)
+            {
+                var existingComponent = existingPolicy.Components
+                    .FirstOrDefault(c => c.Sequence == componentPatch.Sequence);
+
+                if (existingComponent != null)
+                {
+                    // Update only provided values
+                    if (componentPatch.Name != null)
+                        existingComponent.Name = componentPatch.Name;
+                
+                    if (componentPatch.Operation.HasValue)
+                        existingComponent.Operation = componentPatch.Operation.Value;
+                
+                    if (componentPatch.FlatValue.HasValue)
+                        existingComponent.FlatValue = componentPatch.FlatValue.Value;
+                
+                    if (componentPatch.PercentageValue.HasValue)
+                        existingComponent.PercentageValue = componentPatch.PercentageValue.Value;
+                }
+            }
+        }
+
+        existingPolicy.UpdatedAt = DateTime.UtcNow;
         var updatedPolicy = await _policyRepository.UpdateAsync(existingPolicy);
         return Ok(updatedPolicy);
     }
+
+
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<bool>> DeletePolicy(int id)
